@@ -1,26 +1,16 @@
 import '../css/todo.scss';
 
-const dateUtil = require("./dateUtil");
-const drawTodo = require("./drawTodo");
+import { paintPendingTodo, paintFinishedTodo } from "./drawTodo";
+import { getDateStr } from "./dateUtil";
+import TodoStorage from "./todoStorage";
 
-export const LS_PENDING = "PENDING";
-export const LS_FINISHED = "FINISHED";
+const TODO_FORM = ".todo-form";
+const TODO_FORM_CONTENT = ".todo-content";
+const TODO_FORM_DATE = ".todo-date";
 
-export const getTodos = function () {
-  return {
-    pendingList : JSON.parse(localStorage.getItem(LS_PENDING)) || [],
-    finishedList : JSON.parse(localStorage.getItem(LS_FINISHED)) || []
-  }
-}
-
-export const setTodos = function (todoList) {
-  localStorage.setItem(LS_PENDING, JSON.stringify(todoList.pendingList));
-  localStorage.setItem(LS_FINISHED, JSON.stringify(todoList.finishedList));
-}
-
-const form = document.querySelector(".todo-form");
-const todo = form.querySelector("input.todo-content");
-const date = form.querySelector("input.todo-date");
+const form = document.querySelector(TODO_FORM);
+const todo = form.querySelector(TODO_FORM_CONTENT);
+const date = form.querySelector(TODO_FORM_DATE);
 
 let valid = false;
 
@@ -62,13 +52,10 @@ const checkTodoContent = function(event) {
   }
 }
 
-form.addEventListener("submit", submitHandler);
-todo.addEventListener("keydown", checkTodoContent);
-
 const saveTodo = function (todoText, date) {
   const todo = getTodoObj(todoText, date);
 
-  const todoList = getTodos();
+  const todoList = TodoStorage.getTodos();
 
   todoList.pendingList.push(todo);
   setTodos(todoList);
@@ -84,17 +71,19 @@ const getTodoObj = (text, date) => {
   };
 }
 
-export const init = function () {
-  const date = form.querySelector("input.todo-date");
-  date.min = dateUtil.getDateStr();
+form.addEventListener("submit", submitHandler);
+todo.addEventListener("keydown", checkTodoContent);
 
-  const todoList = getTodos();
+export const init = function () {
+  date.min = getDateStr();
+
+  const todoList = TodoStorage.getTodos();
   
   for (const pending of todoList.pendingList) {
-    drawTodo.paintPendingTodo(pending);
+    paintPendingTodo(pending);
   }
 
   for (const finished of todoList.finishedList) {
-    drawTodo.paintFinishedTodo(finished);
+    paintFinishedTodo(finished);
   }
 };

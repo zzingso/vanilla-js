@@ -81,10 +81,7 @@ button {
     text-align: center;
     outline: none;
 
-    &.cancel, 
-    &.update, 
-    &.finish, 
-    &.undo {
+    &.todo-button {
         background-color: transparent;
         min-height: 20px;
     }

@@ -1,7 +1,6 @@
-const path = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
+import path from 'path';
+import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 module.exports = {
     mode: "development",
@@ -34,7 +33,11 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env']
+                        presets: ['@babel/preset-env'],
+                        plugins: [
+                            '@babel/plugin-syntax-class-properties',
+                            '@babel/plugin-proposal-class-properties'
+                        ]
                     }
                 }
             },
