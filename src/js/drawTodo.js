@@ -1,11 +1,13 @@
 import TodoStorage from "./todoStorage";
-import { getDateStr, getDDay } from "./dateUtil";
+import DateUtil from "./dateUtil";
 
-const TODO_LIST_PENDING = ".pending-todo";
-const TODO_LIST_FINISHED = ".finished-todo";
+const CLASS_PENDING_TODO = ".pending-todo";
+const CLASS_FINISHED_TODO = ".finished-todo";
 
-const pending = document.querySelector(TODO_LIST_PENDING);
-const finished = document.querySelector(TODO_LIST_FINISHED);
+const pending = document.querySelector(CLASS_PENDING_TODO);
+const finished = document.querySelector(CLASS_FINISHED_TODO);
+
+const todoStorage = new TodoStorage();
 
 export const paintPendingTodo = function (todo) {
   const li = repaintTodo(todo);
@@ -67,7 +69,7 @@ const getLiElement = function (todo) {
 
   if (todo.date) {
     dDaySpan.setAttribute("data-value", todo.date);
-    dDaySpan.innerText = `D-${getDDay(todo.date)}`;
+    dDaySpan.innerText = `D-${DateUtil.getDDay(todo.date)}`;
   }
 
   li.appendChild(span);
@@ -125,7 +127,7 @@ const paintUpdateTodo = function (event) {
   const dateInput = document.createElement("input");
   dateInput.id = id;
   dateInput.type = "date";
-  dateInput.min = getDateStr();
+  dateInput.min = DateUtil.getDateStr();
   dateInput.className = "update-date";
   dateInput.value = li.querySelector("span.d-day").getAttribute("data-value");
   dateInput.addEventListener("keydown", updateTodo);
@@ -153,7 +155,7 @@ const updateTodo = function (event) {
   const date = li.querySelector(".update-date").value;
 
   if(event.type === "keydown" && event.key === "Escape") {
-    const todoList = TodoStorage.getTodos();
+    const todoList = todoStorage.getTodos();
     const currentTodo = todoList.pendingList.find((x) => x.id === id);
 
     repaintTodo(currentTodo);
@@ -175,7 +177,7 @@ const updateTodo = function (event) {
   }
 
   if (event.type === "click" || (event.type === "keydown" && event.code === "Enter")) {
-    const todoList = TodoStorage.getTodos();
+    const todoList = todoStorage.getTodos();
     const idx = todoList.pendingList.findIndex((x) => x.id === id);
     const updatedTodo = todoList.pendingList[idx];
 
@@ -183,24 +185,24 @@ const updateTodo = function (event) {
     updatedTodo.date = date;
 
     todoList.pendingList[idx] = updatedTodo;
-    todo.setTodos(todoList);
+    todoStorage.setTodos(todoList);
 
     repaintTodo(updatedTodo);
   }
 }
 
 const cancelTodo = function (event) {
-  const todoList = TodoStorage.getTodos();
+  const todoList = todoStorage.getTodos();
 
   const id = event.target.parentNode.id;
   todoList.pendingList = todoList.pendingList.filter((x) => x.id !== id);
 
-  todo.setTodos(todoList);
+  todoStorage.setTodos(todoList);
   deleteTodo(event.target.parentNode);
 };
 
 const finishTodo = function (event) {
-  const todoList = TodoStorage.getTodos();
+  const todoList = todoStorage.getTodos();
 
   const id = event.target.parentNode.id;
   const finishedTodo = todoList.pendingList.find((x) => x.id === id);
@@ -208,13 +210,13 @@ const finishTodo = function (event) {
 
   todoList.finishedList.push(finishedTodo);
 
-  todo.setTodos(todoList);
+  todoStorage.setTodos(todoList);
   deleteTodo(event.target.parentNode);
   paintFinishedTodo(finishedTodo);
 };
 
 const undoTodo = function (event) {
-  const todoList = TodoStorage.getTodos();
+  const todoList = todoStorage.getTodos();
 
   const id = event.target.parentNode.id;
   const undoTodo = todoList.finishedList.find((x) => x.id === id);
@@ -222,7 +224,7 @@ const undoTodo = function (event) {
 
   todoList.pendingList.push(undoTodo);
 
-  todo.setTodos(todoList);
+  todoStorage.setTodos(todoList);
   deleteTodo(event.target.parentNode);
   paintPendingTodo(undoTodo);
 };

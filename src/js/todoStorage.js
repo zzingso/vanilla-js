@@ -1,21 +1,20 @@
-export default class Todo {  
+export default class TodoStorage {  
 
   constructor() {
-    
+    this.TODO_LS_PENDING = "PENDING";
+    this.TODO_LS_FINISHED = "FINISHED";
   }
 
-  static TODO_LS_PENDING = "PENDING";
-  static TODO_LS_FINISHED = "FINISHED";
-
-  static getTodos = function () {
+  getTodos = () => {
+    console.log(this.TODO_LS_PENDING);
     return {
       pendingList : JSON.parse(localStorage.getItem(this.TODO_LS_PENDING)) || [],
       finishedList : JSON.parse(localStorage.getItem(this.TODO_LS_FINISHED)) || []
     }
   }
   
-  static setTodos = function (todoList) {
+  setTodos = (todoList) => {
     localStorage.setItem(this.TODO_LS_PENDING, JSON.stringify(todoList.pendingList));
-    localStoraherhfgege.setItem(this.TODO_LS_FINISHED, JSON.stringify(todoList.finishedList));
+    localStorage.setItem(this.TODO_LS_FINISHED, JSON.stringify(todoList.finishedList));
   }
 }

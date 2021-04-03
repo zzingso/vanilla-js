@@ -1,7 +1,7 @@
 import '../css/todo.scss';
 
 import { paintPendingTodo, paintFinishedTodo } from "./drawTodo";
-import { getDateStr } from "./dateUtil";
+import DateUtil from "./dateUtil";
 import TodoStorage from "./todoStorage";
 
 const TODO_FORM = ".todo-form";
@@ -9,8 +9,10 @@ const TODO_FORM_CONTENT = ".todo-content";
 const TODO_FORM_DATE = ".todo-date";
 
 const form = document.querySelector(TODO_FORM);
-const todo = form.querySelector(TODO_FORM_CONTENT);
-const date = form.querySelector(TODO_FORM_DATE);
+const todoContent = form.querySelector(TODO_FORM_CONTENT);
+const todoDate = form.querySelector(TODO_FORM_DATE);
+
+const todoStorage = new TodoStorage();
 
 let valid = false;
 
@@ -21,10 +23,10 @@ const submitHandler = function (event) {
     return;
   }
 
-  saveTodo(todo.value, date.value);
+  saveTodo(todoContent.value, todoDate.value);
 
-  todo.value = "";
-  date.value = "";
+  todoContent.value = "";
+  todoDate.value = "";
 };
 
 const checkTodoContent = function(event) {
@@ -37,7 +39,7 @@ const checkTodoContent = function(event) {
 
   if(event.key === "Escape") {
     valid = false;
-    todo.value = "";
+    todoContent.value = "";
     return;
   }
 
@@ -52,32 +54,32 @@ const checkTodoContent = function(event) {
   }
 }
 
-const saveTodo = function (todoText, date) {
-  const todo = getTodoObj(todoText, date);
+const saveTodo = function (content, date) {
+  const todo = getTodoObj(content, date);
 
-  const todoList = TodoStorage.getTodos();
+  const todoList = todoStorage.getTodos();
 
   todoList.pendingList.push(todo);
-  setTodos(todoList);
+  todoStorage.setTodos(todoList);
 
   drawTodo.paintPendingTodo(todo);
 };
 
-const getTodoObj = (text, date) => {
+const getTodoObj = (content, date) => {
   return {
     id: Date.now().toString(),
-    text: text,
+    text: content,
     date: date,
   };
 }
 
 form.addEventListener("submit", submitHandler);
-todo.addEventListener("keydown", checkTodoContent);
+todoContent.addEventListener("keydown", checkTodoContent);
 
 export const init = function () {
-  date.min = getDateStr();
+  todoDate.min = DateUtil.getDateStr();
 
-  const todoList = TodoStorage.getTodos();
+  const todoList = todoStorage.getTodos();
   
   for (const pending of todoList.pendingList) {
     paintPendingTodo(pending);
