@@ -1,5 +1,6 @@
 import './index.scss';
+import './css/todo.scss';
 
-const todo = require("./js/todo.js");
+import { init } from "./js/todo/todo.js";
 
-todo.init();
+init();
