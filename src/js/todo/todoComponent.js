@@ -1,4 +1,5 @@
 import TodoStorage from "./todoStorage";
+import { paintPendingTodo, paintFinishedTodo } from "./drawTodo";
 
 const todoStorage = new TodoStorage();
 
