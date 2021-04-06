@@ -2,12 +2,12 @@ import { paintPendingTodo, paintFinishedTodo } from "./drawTodo";
 import DateUtil from "../dateUtil";
 import TodoStorage from "./todoStorage";
 
+export const WARNING_LABEL = "이 입력란을 작성하세요.";
+export const WARNING_CLASS = "warning";
+
 const TODO_FORM = ".todo-form";
 const TODO_FORM_CONTENT = ".todo-content";
 const TODO_FORM_DATE = ".todo-date";
-
-export const WARNING_LABEL = "이 입력란을 작성하세요.";
-export const WARNING_CLASS = "warning";
 
 const form = document.querySelector(TODO_FORM);
 const todoContent = form.querySelector(TODO_FORM_CONTENT);

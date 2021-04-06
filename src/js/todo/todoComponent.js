@@ -26,7 +26,7 @@ export default class TodoComponent {
       case BTN_TYPE_UNDO :
         return this.makeBtnUndo();
       default :
-        return new Error('I can\'t give you button');
+        return new Error();
     }
   }
 
